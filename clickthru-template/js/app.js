@@ -3,6 +3,7 @@ var slide = new(Backbone.Model.extend({
     console.log('model initialized');
   },
   currentIndex: null,
+  nextIndex: null,
   url: "data/data.txt",
   default: function(){
     console.log("slide model default");
@@ -18,11 +19,26 @@ var slide = new(Backbone.Model.extend({
     }else{
       slideView.render.error("No More Slides!");
     }
+    this.getNextSlide();
+  },
+  getNextSlide: function(){
+    var nextIndex = this.currentIndex + 1;
+    // Check to see if the object exists
+    if(this.attributes[nextIndex] !== undefined){
+      this.nextIndex = nextIndex;
+      this.renderNext(nextIndex);
+    }else{
+      slideView.renderNext.error("No More Slides!");
+    }
   },
   render: function(index){
     var obj = this.attributes[index];
     slideView.render.slide(obj);
-  }
+  },
+  renderNext: function(index){
+    var obj = this.attributes[index];
+    slideView.renderNext.slide(obj);
+  },
 }));
 
 var slideView = new(Backbone.View.extend({
@@ -33,18 +49,34 @@ var slideView = new(Backbone.View.extend({
   el: $(document),
   render: {
     slide: function(obj){
-      var html = '<a href="#/' + (parseInt(obj.id) + 1) + '">' +
+      var current = '<a href="#/' + (parseInt(obj.id) + 1) + '">' +
                   '<img src="' + obj.src +
                   '" data-order="' + parseInt(obj.id) + '"></a>';
-      $('#app').html(html);
+      $('#current').html(current);
       console.log("view rendered");
     },
+    // Insert Method to Render the Next Slide as hidden to "preload" it
     error: function(msg){
-      var html = '<h2>' + msg + "</h2>";
-      $('#app').html(html);
+      var current = '<h2>' + msg + "</h2>";
+      $('#current').html(current);
       console.log("Error view rendered");
     }
-  }
+  },
+  renderNext: {
+    slide: function(obj){
+      var next = '<a href="#/' + (parseInt(obj.id)) + '">' +
+                  '<img src="' + obj.src +
+                  '" data-order="' + parseInt(obj.id) + '"></a>';
+      $('#next').html(next);
+      console.log("view rendered");
+    },
+    // Insert Method to Render the Next Slide as hidden to "preload" it
+    error: function(msg){
+      var next = '<h2>' + msg + "</h2>";
+      $('#next').html(next);
+      console.log("Error view rendered");
+    }
+  },
 }));
 
 var slideShow = new(Backbone.Router.extend({
