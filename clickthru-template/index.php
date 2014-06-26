@@ -5,11 +5,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ClickThru</title>
+  <title>Creative ClickThru</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div id="current"></div>
+    <div id="next" class="hide"></div>
+  </div>
 </body>
   <script src="http://code.jquery.com/jquery.min.js"></script>
   <script src="js/vendor/underscore.js"></script>
