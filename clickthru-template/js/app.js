@@ -1,4 +1,9 @@
-var slide = new(Backbone.Model.extend({
+var App = {
+  Models: {},
+  Views: {}
+};
+
+App.Models.slide = new(Backbone.Model.extend({
   initialize: function(){
     console.log('model initialized');
   },
@@ -8,7 +13,7 @@ var slide = new(Backbone.Model.extend({
   default: function(){
     console.log("slide model default");
     this.currentIndex = 0;
-    slideShow.navigate("//1",{trigger:true});
+    App.slideShow.navigate("//1",{trigger:true});
   },
   getSlide: function(id){
     var index = id - 1;
@@ -17,7 +22,7 @@ var slide = new(Backbone.Model.extend({
       this.currentIndex = index;
       this.render(index);
     }else{
-      slideView.render.error("No More Slides!");
+      App.Views.slideView.render.error("No More Slides!");
     }
     this.getNextSlide();
   },
@@ -28,24 +33,24 @@ var slide = new(Backbone.Model.extend({
       this.nextIndex = nextIndex;
       this.renderNext(nextIndex);
     }else{
-      slideView.renderNext.error("No More Slides!");
+      App.Views.slideView.renderNext.error("No More Slides!");
     }
   },
   render: function(index){
     var obj = this.attributes[index];
-    slideView.render.slide(obj);
+    App.Views.slideView.render.slide(obj);
   },
   renderNext: function(index){
     var obj = this.attributes[index];
-    slideView.renderNext.slide(obj);
+    App.Views.slideView.renderNext.slide(obj);
   },
 }));
 
-var slideView = new(Backbone.View.extend({
+App.Views.slideView = new(Backbone.View.extend({
   initialize: function(){
     console.log('model view initialized');
   },
-  model: slide,
+  model: App.Models.slide,
   el: $(document),
   render: {
     slide: function(obj){
@@ -79,7 +84,7 @@ var slideView = new(Backbone.View.extend({
   },
 }));
 
-var slideShow = new(Backbone.Router.extend({
+App.slideShow = new(Backbone.Router.extend({
   routes:{
     '': 'default',
     ':id':'getSlide'
@@ -90,10 +95,10 @@ var slideShow = new(Backbone.Router.extend({
   },
   default: function(){
     console.log("default route triggered");
-    slide.default();
+    App.Models.slide.default();
   },
   fetchSlides: function(){
-    slide.fetch({
+    App.Models.slide.fetch({
       success: function(){
         console.log("model data fetched!");
         Backbone.history.start();
@@ -106,7 +111,7 @@ var slideShow = new(Backbone.Router.extend({
   },
   getSlide: function(id){
     console.log("getSlide route triggered");
-    slide.getSlide(id);
+    App.Models.slide.getSlide(id);
   }
 }));
 
